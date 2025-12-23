@@ -1,0 +1,16 @@
+#!/bin/bash
+#PBS -N DID_simulation3
+#PBS -l select=1:ncpus=100:mpiprocs=100:mem=100gb
+#PBS -l walltime=24:00:00
+#PBS -j oe
+#PBS -o runninglog3.txt
+#PBS -P 11004301
+#PBS -q normal
+
+#cd $PBS_O_WORKDIR
+
+module load miniforge3
+conda activate myRenv
+
+# Rscript DID/testWild.R
+Rscript DID/sampSizeDID.R
