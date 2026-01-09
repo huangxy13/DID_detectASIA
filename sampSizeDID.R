@@ -10,9 +10,8 @@ library(tidyverse)
 set.seed(123)
 
 # setwd('D:/NUS Dropbox/Xiangyuan Huang/github/')
-if (getwd() != 'D:/NUS Dropbox/Xiangyuan Huang/github/DID') {
-  setwd('DID')
-}
+ifelse(str_detect(getwd(), 'github'),
+       setwd('DID_detectASIA'), setwd('DID_detectASIA'))
 cat("wd =", getwd(), "\n")
 
 
