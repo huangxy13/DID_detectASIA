@@ -1,0 +1,24 @@
+# R temporary files
+.Rhistory
+.RData
+.Rproj.user/
+.Ruserdata
+*.Rproj
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Build artifacts
+*.o
+*.so
+*.dll
+*.exe
+*.tiff
+
+# Data and results
+obselete/
+Alec/
+
+*.Rhistory
+*.tmp
