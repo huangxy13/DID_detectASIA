@@ -1,0 +1,15 @@
+
+nGroupT = 6, nGroupC = 2, 
+meanC = 10, sdC = 1, ef = 0.3, 
+rho = 0.3, sampleSize = 10, 
+nMonthPre = 12, nMonthPost = 12,
+b1 = -0.001, b2 = 0.5, b3 = -1, b4 = 0, 
+b6 = -1, b7 = -0.5, idSD = 1
+
+group_shock = rnorm(n(), 0, 0.1)
+meanC0 = rnorm(1, meanC, sdC)
+
+No. iteration: 300
+bootstrap iteration: 500
+
+sample size: 13
