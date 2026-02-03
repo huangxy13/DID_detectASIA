@@ -1,15 +1,50 @@
+# Parameters 
 
-nGroupT = 6, nGroupC = 2, 
-meanC = 10, sdC = 1, ef = 0.3, 
-rho = 0.3, sampleSize = 10, 
-nMonthPre = 12, nMonthPost = 12,
-b1 = -0.001, b2 = 0.5, b3 = -1, b4 = 0, 
-b6 = -1, b7 = -0.5, idSD = 1
+No. treatment group: 6
+No. control group: 2
 
-group_shock = rnorm(n(), 0, 0.1)
-meanC0 = rnorm(1, meanC, sdC)
+control group continuous outcome mean (meanC): 6
+control group continuous outcome SD: 0.2
+intervention effect size: -0.3*6
 
-No. iteration: 300
+No. pre-treatment month: 12
+No. post-treatment month: 12
+mean value between-group variance (sdC): 0.2
+within group first order autoregressive coefficient (rho): 0.3
+
+b1 = -0.001
+b2 = 0.5
+b3 = -1
+b4 = 0
+b5 = -0.3*6 (intervention effect size)
+b6 = -1
+b7 = -0.5
+
+random error (SD): 3
+
+
+
+#  Data generation process
+
+meanC0 (group mean value) = normal(meanC, sdC)
+
+group_shock = normal(0, 0.1)
+group_lag = accumulate(group_shock, ~ .x * rho + .y * sqrt(1 - rho^2))
+
+value = meanC0 + group_lag + (b1*month) + (b2*timeP) + (b3*treat) + (b4*month*timeP) + (b5*treat*timeP) + (b6*treat*month) + (b7*treat*month*timeP) + random error
+month: 1-24
+timeP: 0[month 1-12], 1[month 13-24]
+treat: 0[control], 1[intervention]
+
+
+
+# Sample size simulation
+
+model: feols(value ~ month + timeP + treat + month*timeP + treat*timeP + treat*month + treat*month*timeP, data = dfG_agg, cluster = ~group)
+term of interest: treat*timeP
+
+Wild bootstrap simulation (for small number of clusters)
 bootstrap iteration: 500
+No. iteration: 300
 
-sample size: 13
+Result: sample size: 13 (power 81%)
