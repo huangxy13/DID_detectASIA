@@ -1,0 +1,5 @@
+b0 mean 3.46  SD 0.09
+b1 
+b2
+
+20% change
