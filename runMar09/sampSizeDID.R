@@ -45,25 +45,16 @@ dfSim <- function(nGroupT = 2, nGroupC = 2, meanC = 3.46, sdC = 0.5, ef = 0.2,
 
 
 # Scenarios setup ----
-N_reps <- 200
-scenario <- expand.grid(nGroupT = c(2, 3, 4, 5, 6, 7), nGroupC = 2, meanC = 3.46, 
-                        sdC = c(0.09, 0.2, 0.5),
-                        ef = c(0.2), rho = c(0.3),
-                        sampleSize = c(10, 15, 20, 25), 
-                        idSD = c(0.05, 0.1, 1),
-                        B = 100,
-                        N_reps = 1:N_reps)
-
-N_reps <- 1000
-scenario <- expand.grid(nGroupT = c(2, 3, 4, 5, 6, 7), 
+N_reps <- 1001
+scenario <- expand.grid(nGroupT = c(2, 3, 4, 5, 6), 
                         nGroupC = 2, meanC = c(3.46), 
                         sdC = c(0.1),
                         ef = c(0, 0.2), rho = c(0.3),
                         sampleSize = c(10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30), 
                         idSD = c(0.2, 0.3, 0.4),
-                        B = 1000,
+                        B = 999,
                         N_reps = 1:N_reps)
-cat('Number of scenarios: ', nrow(scenario), '/n/n')
+cat('Number of scenarios: ', nrow(scenario), '\n')
 
 
 
@@ -135,7 +126,7 @@ save(final_results, file = 'results_final.Rdata')
 print(Sys.time() - t0)
 
 q()
-  
+
 
 
 
@@ -161,44 +152,19 @@ result <- final_results %>%
   summarise(nIteration = n(), pos = sum(boot_pval <= 0.05),
             power = 100*pos/nIteration) %>%
   mutate(effectSize = factor(ef),
-         idSD = as.character(idSD)) %>%
+         idSD = as.character(idSD),
+         ef = as.character(ef),
+         nGroupT = paste0('No. treat site = ', nGroupT)) %>%
   filter(sdC == 0.1)
 
-p1 <- result %>% filter(nGroupT == 2, sdC == 0.1) %>%
-  ggplot(data = ., aes(x = sampleSize, y = power)) +
-  geom_point(aes(col = idSD)) +
-  geom_smooth(aes(col = idSD), se = FALSE) +
+
+ggplot(data = result, aes(x = sampleSize, y = power)) +
+  geom_point(aes(col = idSD, shape = ef)) +
   geom_hline(yintercept = c(5, 80), linetype = 2) +
-  labs(x = 'Sample Size', y = 'Power (%)')
-p2 <- result %>% filter(nGroupT == 3) %>%
-  ggplot(data = ., aes(x = sampleSize, y = power)) +
-  geom_point(aes(col = idSD)) +
-  geom_smooth(aes(col = idSD), se = FALSE) +
-  geom_hline(yintercept = c(5, 80), linetype = 2) +
-  labs(x = 'Sample Size', y = 'Power (%)')
-p3 <- result %>% filter(nGroupT == 4) %>%
-  ggplot(data = ., aes(x = sampleSize, y = power)) +
-  geom_point(aes(col = idSD)) +
-  geom_smooth(aes(col = idSD), se = FALSE) +
-  geom_hline(yintercept = c(5, 80), linetype = 2)
-p4 <- result %>% filter(nGroupT == 5) %>%
-  ggplot(data = ., aes(x = sampleSize, y = power)) +
-  geom_point(aes(col = idSD)) +
-  geom_smooth(aes(col = idSD), se = FALSE) +
-  geom_hline(yintercept = c(5, 80), linetype = 2) +
-  labs(x = 'Sample Size', y = 'Power (%)')
-p5 <- result %>% filter(nGroupT == 6) %>%
-  ggplot(data = ., aes(x = sampleSize, y = power)) +
-  geom_point(aes(col = idSD)) +
-  geom_smooth(aes(col = idSD), se = FALSE) +
-  geom_hline(yintercept = c(5, 80), linetype = 2) +
-  labs(x = 'Sample Size', y = 'Power (%)')
-p6 <- result %>% filter(nGroupT == 7) %>%
-  ggplot(data = ., aes(x = sampleSize, y = power)) +
-  geom_point(aes(col = idSD)) +
-  geom_smooth(aes(col = idSD), se = FALSE) +
-  geom_hline(yintercept = c(5, 80), linetype = 2) +
-  labs(x = 'Sample Size', y = 'Power (%)')
+  labs(x = 'Sample Size', y = 'Power (%)', 
+       shape = 'Effect Size', col = 'Random error') +
+  facet_wrap(~nGroupT)
+ggsave('power-SampleSizebynTreat.tiff', dpi = 300, width = 15, height = 12)
 
 
 
@@ -228,4 +194,4 @@ ggplot(data = a, aes(x = month, y = value)) +
   geom_point(aes(col = treat)) +
   geom_vline(xintercept = 13) +
   geom_smooth()
-  geom_smooth(value ~ month)
+geom_smooth(value ~ month)
