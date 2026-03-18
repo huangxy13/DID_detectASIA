@@ -45,11 +45,11 @@ dfSim <- function(nGroupT = 2, nGroupC = 2, meanC = 3.46, sdC = 0.5, ef = 0.2,
 
 
 # Scenarios setup ----
-N_reps <- 1001
+N_reps <- 100
 scenario <- expand.grid(nGroupT = c(2, 3, 4, 5, 6), 
-                        nGroupC = 2, meanC = c(3.46), 
+                        nGroupC = c(2, 4), meanC = c(3.46), 
                         sdC = c(0.1),
-                        ef = c(0, 0.2), rho = c(0.3),
+                        ef = c(0.10, 0.15, 0.20), rho = c(0.3),
                         sampleSize = c(10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30), 
                         idSD = c(0.2, 0.3, 0.4),
                         B = 999,
