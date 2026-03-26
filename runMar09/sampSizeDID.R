@@ -45,9 +45,9 @@ dfSim <- function(nGroupT = 2, nGroupC = 2, meanC = 3.46, sdC = 0.5, ef = 0.2,
 
 
 # Scenarios setup ----
-N_reps <- 100
+N_reps <- 1500
 scenario <- expand.grid(nGroupT = c(2, 3, 4, 5, 6), 
-                        nGroupC = c(2, 4), meanC = c(3.46), 
+                        nGroupC = c(2, 3), meanC = c(3.46), 
                         sdC = c(0.1),
                         ef = c(0.10, 0.15, 0.20), rho = c(0.3),
                         sampleSize = c(10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30), 
@@ -154,17 +154,27 @@ result <- final_results %>%
   mutate(effectSize = factor(ef),
          idSD = as.character(idSD),
          ef = as.character(ef),
-         nGroupT = paste0('No. treat site = ', nGroupT)) %>%
-  filter(sdC == 0.1)
+         nGroupT = paste0('No. treat site = ', nGroupT),
+         nGroupC = as.character(nGroupC),
+         idSD = paste0('Random error: ', idSD))
 
 
 ggplot(data = result, aes(x = sampleSize, y = power)) +
-  geom_point(aes(col = idSD, shape = ef)) +
+  geom_point(aes(col = ef, shape = nGroupC)) +
+  geom_hline(yintercept = c(5, 80), linetype = 2) +
+  labs(x = 'Sample Size', y = 'Power (%)', 
+       col = 'Effect Size', shape = 'No. control group') +
+  facet_wrap(~nGroupT+idSD, ncol = 3)
+ggsave('power-SampleSizebynTreat0326.tiff', dpi = 300, width = 10, height = 25)
+
+result %>% filter(nGroupC == 4) %>% 
+  ggplot(data = ., aes(x = sampleSize, y = power)) +
+  geom_point(aes(col = idSD)) +
   geom_hline(yintercept = c(5, 80), linetype = 2) +
   labs(x = 'Sample Size', y = 'Power (%)', 
        shape = 'Effect Size', col = 'Random error') +
-  facet_wrap(~nGroupT)
-ggsave('power-SampleSizebynTreat.tiff', dpi = 300, width = 15, height = 12)
+  facet_wrap(~nGroupT + ef, ncol = 3)
+ggsave('power.tiff', dpi = 300, width = 10, height = 18)
 
 
 
